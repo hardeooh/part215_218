@@ -28,6 +28,10 @@ const App = () => {
     setNewName('')
   }
 
+  const deleteItem = (id) => {
+    setPersons(persons.filter(e=>e.id!==id))
+  }
+
   const handleNameChange = (e) => {
     setNewName(e.target.value)
   }
@@ -59,16 +63,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ul>
-        {
-        persons.filter(e=> {
-          return (filterName==="")
-            ? e
-            : (e["name"].toLowerCase().includes(filterName.toLowerCase()))
-              ? e
-              : false
-        })  
-          .map(e=> <Person name={e} key={e.id} />)
-          }
+        <Person persons={persons} filterName={filterName} deleteItem={deleteItem}/> 
       </ul>
       
     </div>
