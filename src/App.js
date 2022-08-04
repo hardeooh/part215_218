@@ -15,7 +15,7 @@ const App = () => {
  
   }, [])
 
-  const addName = (e) => {
+  const addName = async (e) => {
     e.preventDefault()
     const nameObject = {
       name: newName,
@@ -23,14 +23,15 @@ const App = () => {
       id: `${persons.length+1}`
     }
     const duplicatePersonIndex = persons.map(e=>e.name.toLowerCase()).indexOf(newName.toLowerCase()) 
-
+    console.log(persons.filter((e,i)=>i===duplicatePersonIndex)[0]);
 
     if(duplicatePersonIndex > -1){ 
       window.confirm('Duplicate name, replace number?')
-      noteService.update(persons[duplicatePersonIndex].id, persons[duplicatePersonIndex]['number']=newNumber) 
+      await noteService.update(persons[duplicatePersonIndex].id, newNumber, persons.filter((e,i)=>i===duplicatePersonIndex)[0]) 
     } else {
-        noteService.create(nameObject).then(res=>setPersons(persons.concat(nameObject)))
+        await noteService.create(nameObject).then(res=>setPersons(persons.concat(nameObject)))
     }
+    await noteService.getAll().then(res=>setPersons(res))
     setNewName('')
     setNewNumber('')
   }
