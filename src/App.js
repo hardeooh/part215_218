@@ -22,15 +22,24 @@ const App = () => {
       number: newNumber,
       id: `${persons.length+1}`
     }
-    persons.map(e=>e.name.toLowerCase()).indexOf(newName.toLowerCase()) > -1 
-      ? alert(`${newName} has a duplicate`) 
-      : setPersons(persons.concat(nameObject))
+    const duplicatePersonIndex = persons.map(e=>e.name.toLowerCase()).indexOf(newName.toLowerCase()) 
+
+
+    if(duplicatePersonIndex > -1){ 
+      window.confirm('Duplicate name, replace number?')
+      noteService.update(persons[duplicatePersonIndex].id, persons[duplicatePersonIndex]['number']=newNumber) 
+    } else {
+        noteService.create(nameObject).then(res=>setPersons(persons.concat(nameObject)))
+    }
     setNewName('')
     setNewNumber('')
   }
 
-  const deleteItem = (id) => {
-    setPersons(persons.filter(e=>e.id!==id))
+  const deleteItem = async (id) => {
+    await noteService.remove(id)
+    await noteService.getAll().then(res=>setPersons(res))
+    // setPersons(persons.filter(e=>e.id!==id))
+    
   }
 
   const handleNameChange = (e) => {
