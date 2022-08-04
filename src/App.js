@@ -26,6 +26,7 @@ const App = () => {
       ? alert(`${newName} has a duplicate`) 
       : setPersons(persons.concat(nameObject))
     setNewName('')
+    setNewNumber('')
   }
 
   const deleteItem = (id) => {
