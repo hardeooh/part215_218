@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import noteService from './services/notes'
 import Person from './component/Person'
+import Error from './component/Error'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     console.log('effect')
@@ -26,7 +28,10 @@ const App = () => {
     console.log(persons.filter((e,i)=>i===duplicatePersonIndex)[0]);
 
     if(duplicatePersonIndex > -1){ 
-      window.confirm('Duplicate name, replace number?')
+      setErrorMessage('Duplicate name, Enter a New Name')
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 5000)
       await noteService.update(persons[duplicatePersonIndex].id, newNumber, persons.filter((e,i)=>i===duplicatePersonIndex)[0]) 
     } else {
         await noteService.create(nameObject).then(res=>setPersons(persons.concat(nameObject)))
@@ -38,8 +43,14 @@ const App = () => {
 
   const deleteItem = async (id) => {
     await noteService.remove(id)
-    await noteService.getAll().then(res=>setPersons(res))
-    // setPersons(persons.filter(e=>e.id!==id))
+      .catch((error) => {
+        if(error.response){
+          setErrorMessage(`Information about ${newName} has been deleted already`);
+        }
+      })
+    await noteService.getAll()
+      .then(res=>setPersons(res))
+    
     
   }
 
@@ -58,6 +69,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Error message={errorMessage}/>
       <div>
         Filter <input value={filterName} onChange={handleFilterChange} />
       </div>
