@@ -15,7 +15,7 @@ const Person = ({persons, filterName, deleteItem}) => {
         {e.name} {e.number} 
         <button onClick={() => {
           return window.confirm('Are You Sure?')
-          ? deleteItem(e.id)
+          ? deleteItem(e.name,e.id)
           : false
         }}>Delete</button>
       </li>)

@@ -41,11 +41,13 @@ const App = () => {
     setNewNumber('')
   }
 
-  const deleteItem = async (id) => {
+  const deleteItem = async (name,id) => {
+    let deletedName = name
     await noteService.remove(id)
       .catch((error) => {
         if(error.response){
-          setErrorMessage(`Information about ${newName} has been deleted already`);
+          console.log(error.response)
+          setErrorMessage(`Information about ${deletedName} has been deleted already`);
         }
       })
     await noteService.getAll()
